@@ -1,0 +1,83 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<style>
+    #welcome-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #4f868c; /* Background color */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+    }
+
+    .welcome-logo {
+        text-align: center;
+    }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        99% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+
+    #welcome-container.fade-out {
+        animation: fadeOut 2s forwards; /* Apply fade-out animation */
+    }
+
+    .logo {
+        width: 300px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div id="welcome-container">
+    <div class="welcome-logo">
+        <img src="{% static 'images/logo.png' %}" alt="Eco-Shift Logo" class="logo">
+        <h1 id="eco-text">Eco</h1>
+        <h1 id="shift-text">Shift</h1>
+        <p class="tagline">Where Sustainability Meets Shopping</p>
+    </div>
+</div>
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-lg-4">
+        <img class="thumbnail" src="{{ product.imageURL }}">
+        <div class="box-element product">
+            <h6><strong>{{ product.name }}</strong></h6>
+            <hr>
+            <button data-product="{{ product.id }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+            <a class="btn btn-outline-success" href="#">View</a>
+            <h4 style="display: inline-block; float: right"><strong>₹{{ product.price }}</strong></h4>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="{% static 'js/cart.js' %}"></script>
+<script>
+    window.addEventListener('load', function() {
+        const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+
+        if (!hasSeenWelcome) {
+            setTimeout(function() {
+                const welcomeContainer = document.getElementById('welcome-container');
+                                welcomeContainer.classList.add('fade-out');
+
+                welcomeContainer.addEventListener('animationend', function() {
+                    welcomeContainer.style.display = 'none';
+                });
+            }, 2000);
+
+            localStorage.setItem('hasSeenWelcome', 'true');
+        } else {
+            document.getElementById('welcome-container').style.display = 'none';
+        }
+    });
+</script>
+{% endblock content %}
